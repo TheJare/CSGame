@@ -1,0 +1,11 @@
+{
+    "name": "ICSGame"
+  , "version": "0.0.1"
+  , "description": "CoffeeScript Game coding test"
+  , "keywords": []
+  , "author": "Javier Arevalo <jare@iguanademos.com>"
+  , "private": true
+  , "dependencies": {}
+  , "main": "bin/index.html"
+  , "engines": { }
+}
