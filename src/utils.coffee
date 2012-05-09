@@ -12,6 +12,7 @@
 @RandomFloat = (v) -> Math.random()*v
 @RandomFloatRange = (a,b) -> Math.random()*(b-a)+a
 @RandomColor = (min, max, a) -> min ||= 0; max ||= 255; MakeColor RandomIntRange(min, max), RandomIntRange(min, max), RandomIntRange(min, max), a
+@RandomAngle = () -> Math.random()*Math.PI*2
 
 @requestAnimationFrame ||= 
     window.webkitRequestAnimationFrame ||
@@ -60,3 +61,7 @@ curTime = lastTime = 0
 	ctx.arc x, y, r, 0, Math.PI*2, true
 	ctx.fillStyle = color
 	ctx.fill()
+
+@RenderRect = (ctx, x, y, w, h, color) ->
+	ctx.fillStyle = color
+	ctx.fillRect(x, y, w, h)

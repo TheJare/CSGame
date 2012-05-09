@@ -74,3 +74,33 @@ class @Mat2
 		# Monkeypatched the Canvas Context2D to contain an xform property
 		ctx.xform = this
 		return
+
+# 2D rect
+class @Rect
+	constructor: (a) ->
+		@m = a or [0, 0, 0, 0]
+
+	contains: (x, y) ->
+		x >= @m[0] and y >= @m[1] and x < @m[2] and y < @m[3]
+
+	intersect: (r) ->
+		Math.max(@m[2], r.m[2]) - Math.min(@m[0], r.m[0]) > 0 and (Math.max(@m[3], r.m[3]) - Math.min(@m[1], r.m[1])) > 0
+
+	x: () -> @m[0]
+	y: () -> @m[1]
+	x1: () -> @m[2]
+	y1: () -> @m[3]
+	w: () -> @m[2]-@m[0]
+	h: () -> @m[3]-@m[1]
+	cx: () -> (@m[2]+@m[0])/2
+	cy: () -> (@m[3]+@m[1])/2
+
+	union: (r) ->
+		new Rect [Math.min(@m[0], r.m[0]), Math.min(@m[1], r.m[1]), Math.max(@m[2], r.m[2]), Math.max(@m[3], r.m[3]) ]
+
+	intersection: (r) ->
+		new Rect [Math.max(@m[0], r.m[0]), Math.max(@m[1], r.m[1]), Math.min(@m[2], r.m[2]), Math.min(@m[3], r.m[3]) ]
+
+	translate: (x,y) ->
+		new Rect [ @m[0]+x, @m[1]+y, @m[2]+x, @m[3]+y ]
+

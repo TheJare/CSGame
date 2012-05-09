@@ -25,8 +25,8 @@ $(addprefix $(OUTDIR)/, $(STATIC_FILES)): $(addprefix $(SRCDIR)/, $(STATIC_FILES
 
 $(OUTFILE): $(TEMPFILE)
 	@mkdir -p $(OUTDIR)
-	#cp $< $@
-	uglifyjs $< > $@
+	cp $< $@
+	#uglifyjs $< > $@
 
 $(TEMPDIR)/%.js: $(SRCDIR)/%.coffee
 	@mkdir -p $(TEMPDIR)
