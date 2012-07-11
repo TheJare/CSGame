@@ -12,13 +12,13 @@ class Blob extends Go
 	reset: ->
 		@maxlife = RandomFloatRange 1, 8
 		radius = minSize*RandomFloatRange 0.01, 0.10
-		@color = RandomColor 0, 255, 0.2
+		@color = RandomColor 0, 255, 100
 		x = RandomIntRange 1, canvas.width-2
 		y = RandomIntRange 1, canvas.height-2
 		@rect = new Rect [x, y, x+radius*RandomFloatRange(0.1, 1), y+radius*RandomFloatRange(0.1, 1)]
 		v = radius*RandomFloatRange(0.001, 0.1)
 		a = RandomAngle()
-		@vel = new Vec2 v*Math.cos(a), v*Math.sin(a)
+		@vel = Vec2.FromAngLen a, v
 
 	tick: (t) ->
 		super
@@ -48,14 +48,15 @@ blobs = new GoContainer
 tick = (elapsed, curTime) ->
 	minSize = Math.min(canvas.width, canvas.height)
 	blobs.tick elapsed
-	#blobs.xform = (new Mat2).translate(canvas.width/2, canvas.height/2).scale(0.5, 0.5).rotate curTime*0.8
+
+	RenderRect ctx, 0, 0, canvas.width, canvas.height, "black"
 	blobs.render ctx
 
-$ () ->
+window.addEventListener "load", () ->
 	LOG "Starting up"
-	[ctx, canvas] = SetupCanvas "#uicontainer", "fullscreen", MakeColor 0,0,0 #255, 0, 255
+	[ctx, canvas] = SetupCanvas "uicontainer", "fullscreen", MakeColor 0,0,0 #255, 0, 255
 	tick()
-	for i in [0...20]
+	for i in [0...900]
 		blobs.creatego new Blob
 	Tick tick
 	return

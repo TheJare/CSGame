@@ -10,7 +10,7 @@ SOURCE_FILES = \
 
 OUTDIR = bin
 OUTFILE = $(OUTDIR)/all.min.js
-TEMPDIR = lib
+TEMPDIR = obj
 TEMPFILE = $(TEMPDIR)/all.js
 
 build: $(OUTFILE) $(addprefix $(OUTDIR)/, $(STATIC_FILES))
@@ -21,12 +21,12 @@ clean:
 
 $(addprefix $(OUTDIR)/, $(STATIC_FILES)): $(addprefix $(SRCDIR)/, $(STATIC_FILES))
 	@mkdir -p $(OUTDIR)
-	cp $(addprefix $(SRCDIR)/, $(STATIC_FILES)) $(addprefix $(OUTDIR)/, $(STATIC_FILES))
+	cp $(addprefix $(SRCDIR)/, $(STATIC_FILES)) $(OUTDIR)/
 
 $(OUTFILE): $(TEMPFILE)
 	@mkdir -p $(OUTDIR)
-	cp $< $@
-	#uglifyjs $< > $@
+	#cp $< $@
+	uglifyjs $< > $@
 
 $(TEMPDIR)/%.js: $(SRCDIR)/%.coffee
 	@mkdir -p $(TEMPDIR)

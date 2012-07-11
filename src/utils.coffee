@@ -1,7 +1,7 @@
 # Misc utils
 
 @LOG = (a) -> console.log(if typeof a is "object" then JSON.stringify a else a); return
-@MakeColor = (r,g,b,a) -> "rgba("+Math.floor(Clamp r, 0, 255) + "," + Math.floor(Clamp g, 0, 255)+","+Math.floor(Clamp b, 0, 255)+","+(if a? then a else "255") + ")"
+@MakeColor = (r,g,b,a) -> "rgba("+Math.floor(Clamp r, 0, 255) + "," + Math.floor(Clamp g, 0, 255)+","+Math.floor(Clamp b, 0, 255)+","+(if a? then a/255 else "1.0") + ")"
 
 @Pow2 = (v) -> v*v
 @Lerp = (a,b,t) -> a+(b-a)*t
@@ -14,6 +14,10 @@
 @RandomColor = (min, max, a) -> min ||= 0; max ||= 255; MakeColor RandomIntRange(min, max), RandomIntRange(min, max), RandomIntRange(min, max), a
 @RandomAngle = () -> Math.random()*Math.PI*2
 
+@AddClass = (el, cls) ->
+	c = el.className
+	el.className += (c? " " : "") + cls
+
 @requestAnimationFrame ||= 
     window.webkitRequestAnimationFrame ||
     window.mozRequestAnimationFrame ||
@@ -23,21 +27,22 @@
         window.setTimeout callback, 1000 / 60
 
 @SetupCanvas = (container, canvasclass, bgcolor) ->
-	uicontainer = $ container
-	uicontainer.css("background", bgcolor) if bgcolor
-	canvas = document.createElement "canvas"
-	$(canvas).addClass if canvasclass then canvasclass else "fullscreen"
-	uicontainer.append(canvas)
+	uicontainer = document.getElementById container
+	if bgcolor
+		uicontainer.style.cssText += ";background:" + bgcolor
+	canvas = @document.createElement "canvas"
+	AddClass canvas, if canvasclass then canvasclass else "fullscreen"
+	uicontainer.appendChild canvas
 	ctx = canvas.getContext "2d"
 
 	rebuildCanvas = () ->
-		canvas.width = uicontainer.width() #window.document.body.clientWidth
-		canvas.height = uicontainer.height() #window.document.body.clientHeight
+		canvas.width = uicontainer.clientWidth #window.document.body.clientWidth
+		canvas.height = uicontainer.clientHeight #window.document.body.clientHeight
 		return
 
-	$(window.document).bind "touchmove", (e) -> e.preventDefault()
-	$(window).resize rebuildCanvas
-	$(window.document).bind "orientationChanged", (e) -> rebuildCanvas()
+	@document.addEventListener "touchmove", (e) -> e.preventDefault()
+	@addEventListener "resize", rebuildCanvas
+	@document.addEventListener "orientationChanged", rebuildCanvas
 	rebuildCanvas()
 	return [ctx, canvas]
 
