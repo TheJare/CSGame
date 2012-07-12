@@ -43,20 +43,22 @@ class Blob extends Go
 		RenderRect ctx, @rect.x(), @rect.y(), @rect.w(), @rect.h(), @color
 
 canvas = ctx = null
-blobs = new GoContainer
+blobs = null
 
 tick = (elapsed, curTime) ->
 	minSize = Math.min(canvas.width, canvas.height)
 	blobs.tick elapsed
 
-	RenderRect ctx, 0, 0, canvas.width, canvas.height, "black"
+	RenderRect ctx, 0, 0, canvas.width, canvas.height, MakeColor 0,0,0,20
 	blobs.render ctx
 
 window.addEventListener "load", () ->
 	LOG "Starting up"
 	[ctx, canvas] = SetupCanvas "uicontainer", "fullscreen", MakeColor 0,0,0 #255, 0, 255
+	blobs = new GoContainer
+
 	tick()
-	for i in [0...900]
+	for i in [0...300]
 		blobs.creatego new Blob
 	Tick tick
 	return
