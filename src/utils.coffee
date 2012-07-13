@@ -38,7 +38,7 @@
 
 @AddClass = (el, cls) ->
 	c = el.className
-	el.className += (c? " " : "") + cls
+	el.className += (if c? them " " else "") + cls
 
 # ---------------
 # Detection
