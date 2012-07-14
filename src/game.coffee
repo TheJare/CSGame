@@ -66,18 +66,30 @@ window.addEventListener "load", () ->
 	[ctx, canvas] = SetupCanvas "uicontainer", "fullscreen", MakeColor 0,0,0 #255, 0, 255
 	blobs = new GoContainer
 	ui = new UIScreen
-	but = new UITextButton ctx, 100, 100, "Hlgpfitap_|", "Times New Roman", 20, ["black", "white"]
+	but = new UITextButton ctx, 100, 100, "Hlgpfitap_|", "Times New Roman", 20, ["black", "white", "green"]
 	ui.creatego but
 	blobs.creatego ui
 
-	canvas.addEventListener "mousemove", (e) ->
-		[x,y] = ClientToCanvas canvas, e.clientX, e.clientY
+	cursorMoveFn = (x,y) ->
+		[x,y] = ClientToCanvas canvas, x,y
 		but.text = "#{x}, #{y}"
 		ui.cursor x,y
 		return
+	cursorClickFn = (x,y, b) ->
+		[x,y] = ClientToCanvas canvas, x,y
+		but.text = "#{b}, #{x}, #{y}"
+		ui.click x,y, b
+		return
 
-	canvas.addEventListener (if IsTouchDevice() then "touchstart" else "click"), (e) ->
-		[x,y] = ClientToCanvas canvas, e.clientX, e.clientY
+
+	if IsTouchDevice()
+		canvas.addEventListener "touchmove", (e) -> cursorMoveFn e.changedTouches[0].pageX, e.changedTouches[0].pageY
+		canvas.addEventListener "touchstart", (e) -> cursorClickFn e.changedTouches[0].pageX, e.changedTouches[0].pageY, true
+		canvas.addEventListener "touchend", (e) -> cursorClickFn e.changedTouches[0].pageX, e.changedTouches[0].pageY, false
+	else
+		canvas.addEventListener "mousemove", (e) -> cursorMoveFn e.clientX, e.clientY
+		canvas.addEventListener "mousedown", (e) -> cursorClickFn e.clientX, e.clientY, true
+		canvas.addEventListener "mouseup", (e) -> cursorClickFn e.clientX, e.clientY, false
 
 	tick()
 	for i in [0...300]
