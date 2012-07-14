@@ -9,6 +9,7 @@ SOURCE_FILES = \
 	utils.coffee \
 	vec2.coffee \
 	gameobject.coffee \
+	ui.coffee \
 	game.coffee
 
 COFFEEFILES = $(addprefix $(SRCDIR)/, $(addsuffix .coffee, $(basename $(SOURCE_FILES))))

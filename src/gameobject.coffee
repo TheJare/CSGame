@@ -1,4 +1,3 @@
-
 # Simple hierarchical GameObject management classes
 # Not terribly efficient since it uses full scans of the gameobject arrays for some operations
 # Go is a single entity / GameObject
@@ -12,7 +11,7 @@ class @Go
 		@idx = null
 		@layer = 0
 		@container = null
-		@xform = new Mat2
+		@xform = null #new Mat2
 		return
 
 	tick: (t) ->

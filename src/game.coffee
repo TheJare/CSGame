@@ -8,6 +8,7 @@ class Blob extends Go
 	constructor: ->
 		super
 		@reset()
+		return
 
 	reset: ->
 		@maxlife = RandomFloatRange 1, 8
@@ -19,6 +20,7 @@ class Blob extends Go
 		v = radius*RandomFloatRange(0.001, 0.1)
 		a = RandomAngle()
 		@vel = Vec2.FromAngLen a, v
+		return
 
 	tick: (t) ->
 		super
@@ -30,20 +32,26 @@ class Blob extends Go
 				@vel.x = -@vel.x
 			if (@vel.y > 0 and @rect.y1() >= canvas.height) or (@vel.y < 0 and @rect.y() <= 0)
 				@vel.y = -@vel.y
+		return
 
 	born: ->
 		@layer = globalLayer++
 		super
+		return
 
 	die: ->
 		super
 		@container.creatego new Blob
+		return
 
 	render: (ctx) ->
 		RenderRect ctx, @rect.x(), @rect.y(), @rect.w(), @rect.h(), @color
+		return
 
 canvas = ctx = null
 blobs = null
+
+but = null
 
 tick = (elapsed, curTime) ->
 	minSize = Math.min(canvas.width, canvas.height)
@@ -51,11 +59,25 @@ tick = (elapsed, curTime) ->
 
 	RenderRect ctx, 0, 0, canvas.width, canvas.height, MakeColor 0,0,0,20
 	blobs.render ctx
+	return
 
 window.addEventListener "load", () ->
 	LOG "Starting up"
 	[ctx, canvas] = SetupCanvas "uicontainer", "fullscreen", MakeColor 0,0,0 #255, 0, 255
 	blobs = new GoContainer
+	ui = new UIScreen
+	but = new UITextButton ctx, 100, 100, "Hlgpfitap_|", "Times New Roman", 20, ["black", "white"]
+	ui.creatego but
+	blobs.creatego ui
+
+	canvas.addEventListener "mousemove", (e) ->
+		[x,y] = ClientToCanvas canvas, e.clientX, e.clientY
+		but.text = "#{x}, #{y}"
+		ui.cursor x,y
+		return
+
+	canvas.addEventListener (if IsTouchDevice() then "touchstart" else "click"), (e) ->
+		[x,y] = ClientToCanvas canvas, e.clientX, e.clientY
 
 	tick()
 	for i in [0...300]

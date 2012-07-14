@@ -17,6 +17,13 @@
 @RandomAngle = () -> Math.random()*Math.PI*2
 
 # ---------------
+# Checks
+
+@IsFunction = (f) -> f instanceof Function
+@IsArray = (a) -> a instanceof Array
+@LikeArray = (a) -> (typeof a.length) == "number"
+
+# ---------------
 # Strings
 
 @RepeatString = (s, n) ->
@@ -44,10 +51,13 @@
 # Detection
 
 # http://alastairc.ac/2010/03/detecting-touch-based-browsing/
+sIsTouchDevice = null
 @IsTouchDevice = () ->
-    el = document.createElement 'div'
-    el.setAttribute 'ongesturestart', 'return;'
-    return (typeof el.ongesturestart is "function")
+	if sIsTouchDevice == null
+	    el = document.createElement 'div'
+	    el.setAttribute 'ongesturestart', 'return;'
+	    sIsTouchDevice = IsFunction el.ongesturestart
+    return sIsTouchDevice
 
 # Use different events depending on device type to ensure no lag
 #@gTouchEventString = if IsTouchDevice() then "touchstart" else "click"
@@ -90,17 +100,24 @@ curTime = lastTime = 0
 	uicontainer.appendChild canvas
 	ctx = canvas.getContext "2d"
 
-	rebuildCanvas = () ->
-		canvas.width = uicontainer.clientWidth
-		canvas.height = uicontainer.clientHeight
+	defaultRebuildCanvas = (container) ->
+		canvas.width = container.clientWidth
+		canvas.height = container.clientHeight
 		return
 
-	resizefn ?= rebuildCanvas
+	resizefn ?= defaultRebuildCanvas
+	rebuildCb = () -> resizefn uicontainer
+
 	@document.addEventListener "touchmove", (e) -> e.preventDefault()
-	@addEventListener "resize", resizefn
-	@document.addEventListener "orientationChanged", resizefn
-	resizefn()
+	@addEventListener "resize", rebuildCb
+	@document.addEventListener "orientationChanged", rebuildCb
+	rebuildCb()
 	return [ctx, canvas]
+
+@ClientToCanvas = (canvas, x,y) ->
+	x = (x - canvas.offsetLeft)*(canvas.width/canvas.offsetWidth)
+	y = (y - canvas.offsetTop)*(canvas.height/canvas.offsetHeight)
+	return [x,y]
 
 # ---------------
 # Rendering
