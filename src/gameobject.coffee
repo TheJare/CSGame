@@ -33,7 +33,7 @@ class @Go
 		if newLayer != @layer
 			@container.addToLayer newLayer
 			@container.removeFromLayer @layer
-			@layer = layer
+			@layer = newLayer
 		return
 
 	kill: ->

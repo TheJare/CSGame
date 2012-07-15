@@ -51,8 +51,6 @@ class Blob extends Go
 canvas = ctx = null
 blobs = null
 
-but = null
-
 tick = (elapsed, curTime) ->
 	minSize = Math.min(canvas.width, canvas.height)
 	blobs.tick elapsed
@@ -66,10 +64,8 @@ window.addEventListener "load", () ->
 	[ctx, canvas] = SetupCanvas "uicontainer", "fullscreen", MakeColor 0,0,0 #255, 0, 255
 	blobs = new GoContainer
 	ui = new UIScreen
-	but = new UITextButton "myBut", ctx, 100, 100, "Hlgpfitap_|", "Times New Roman", 20, ["black", "white", "green"]
-	but.on "click", (b) -> @text = "c #{b} #{ui.cursorx}, #{ui.cursory}"
-	but.on "hover", (b) -> @text = "h #{b} #{ui.cursorx}, #{ui.cursory}"
-	ui.creatego but
+	ui.creatego new UITextButton "1", ctx, 100, 100, "Behind", "Times New Roman", [60, 80, 100], ["black", "red", "yellow"], (b) -> @text = "c #{b} #{ui.cursorx}, #{ui.cursory}"
+	ui.creatego new UITextButton "2", ctx, 170, 130, "OnTop", "Arial", 60, ["black", "lightgreen", "white"], null, (b) -> @text = "h #{b} #{ui.cursorx}, #{ui.cursory}"
 	blobs.creatego ui
 
 	SetupUI canvas, ui
